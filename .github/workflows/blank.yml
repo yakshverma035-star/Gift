@@ -1,0 +1,294 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+
+          import React, { useState, useEffect } from 'react';
+import { Flower2, Sparkles, Heart, BookOpen, Volume2, VolumeX, RefreshCw } from 'lucide-react';
+
+interface Shloka {
+  sanskrit: string;
+  transliteration: string;
+  meaning: string;
+}
+
+const SANSKRIT_SHLOKAS: Shloka[] = [
+  {
+    sanskrit: "अज्ञानतिमिरान्धस्य ज्ञानाञ्जनशलाकया।\nचक्षुरुन्मीलितं येन तस्मै श्रीगुरवे नमः॥",
+    transliteration: "Agyana-timirandhasya Jnananjana-salakaya | Chaksur unmeelitam yena tasmai shree-gurave namah ||",
+    meaning: "Salutations to the revered Guru who opened the eyes blinded by the darkness of ignorance with the light of knowledge."
+  },
+  {
+    sanskrit: "गुरुर्ब्रह्मा गुरुर्विष्णुः गुरुर्देवो महेश्वरः।\nगुरुः साक्षात् परं ब्रह्म तस्मै श्रीगुरवे नमः॥",
+    transliteration: "Gurur Brahma Gurur Vishnuh Gurur Devo Maheshwarah | Guruh Sakshat Param Brahma Tasmai Shree Gurave Namah ||",
+    meaning: "The Guru is the creator, preserver, and transformer. The Guru is the supreme reality incarnate. My humble bowing to that divine teacher."
+  },
+  {
+    sanskrit: "विद्वत्त्वं च नृपत्त्वं च नैव तुल्यं कदाचन।\nस्वदेशे पूज्यते राजा विद्वान् सर्वत्र पूज्यते॥",
+    transliteration: "Vidwattwam cha nripatwam cha naiva tulyam kadachana | Swadeshe poojyate raja vidwan sarvatra poojyate ||",
+    meaning: "Scholarliness and royalty are never equal. A king is respected only in his own kingdom, but a learned teacher is revered everywhere."
+  }
+];
+
+export default function App() {
+  const [mounted, setMounted] = useState<boolean>(false);
+  const [shlokaIndex, setShlokaIndex] = useState<number>(0);
+  const [pushpCount, setPushpCount] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [audioCtx, setAudioCtx] = useState<AudioContext | null>(null);
+  const [studentName, setStudentName] = useState<string>("Your Student");
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 150);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const nextShloka = () => {
+    setShlokaIndex((prev) => (prev + 1) % SANSKRIT_SHLOKAS.length);
+  };
+
+  const toggleTamburaDrone = () => {
+    if (!audioCtx) {
+      const AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioCtxClass) {
+        const ctx = new AudioCtxClass();
+        setAudioCtx(ctx);
+        playMeditativeDrone(ctx);
+        setIsPlaying(true);
+      }
+    } else {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+        setIsPlaying(true);
+      } else {
+        audioCtx.suspend();
+        setIsPlaying(false);
+      }
+    }
+  };
+
+  const playMeditativeDrone = (ctx: AudioContext) => {
+    const freqs = [146.83, 220.00, 293.66, 440.00]; 
+    let idx = 0;
+
+    const playHarmonic = () => {
+      if (ctx.state === 'running') {
+        try {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freqs[idx % freqs.length], ctx.currentTime);
+          idx = (idx + 1) % freqs.length;
+
+          gain.gain.setValueAtTime(0, ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.015, ctx.currentTime + 2.5);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 6.0);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 6.0);
+        } catch (e) {}
+      }
+      setTimeout(playHarmonic, 3500);
+    };
+    playHarmonic();
+  };
+
+  const entranceEasing = 'cubic-bezier(0.16, 1, 0.3, 1)';
+
+  return (
+    <div className="bg-[#0b0809] text-amber-50 min-h-screen font-sans selection:bg-amber-500/30 selection:text-amber-100 overflow-x-hidden relative flex flex-col justify-between">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Instrument+Serif:ital@0;1&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap');
+        
+        .font-instrument { font-family: 'Instrument Serif', serif; }
+        .font-cinzel { font-family: 'Cinzel Decorative', serif; }
+        .font-devanagari { font-family: 'Noto Serif Devanagari', serif; }
+
+        .sanskrit-grid-bg {
+          background-image: radial-gradient(rgba(217, 119, 6, 0.12) 1px, transparent 1px);
+          background-size: 32px 32px;
+        }
+
+        @keyframes goldGlow {
+          0%, 100% { opacity: 0.4; transform: scale(1); }
+          50% { opacity: 0.7; transform: scale(1.08); }
+        }
+
+        .animate-gold-glow {
+          animation: goldGlow 8s ease-in-out infinite;
+        }
+      `}</style>
+
+      {/* BACKGROUND ELEMENTS */}
+      <div className="fixed inset-0 sanskrit-grid-bg pointer-events-none" />
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-amber-600/10 rounded-full blur-[140px] pointer-events-none animate-gold-glow" />
+      <div className="fixed bottom-0 right-0 w-[500px] h-[500px] bg-rose-900/15 rounded-full blur-[150px] pointer-events-none" />
+
+      {/* NAVBAR */}
+      <header className="relative z-20 max-w-[1440px] w-full mx-auto px-6 md:px-10 h-20 flex items-center justify-between border-b border-amber-500/15 backdrop-blur-md">
+        <div 
+          className="flex items-center gap-3 transition-all duration-700"
+          style={{
+            opacity: mounted ? 1 : 0,
+            transform: mounted ? 'translateY(0)' : 'translateY(-16px)',
+            transitionTimingFunction: entranceEasing
+          }}
+        >
+          <div className="w-10 h-10 rounded-full bg-amber-500/15 border border-amber-400/30 flex items-center justify-center shadow-[0_0_15px_rgba(217,119,6,0.2)]">
+            <BookOpen className="w-5 h-5 text-amber-300" />
+          </div>
+          <div>
+            <span className="font-cinzel text-lg md:text-xl font-bold tracking-wider text-amber-100 block">
+              संस्कृत साधना
+            </span>
+            <span className="text-[10px] uppercase tracking-widest text-amber-300/70 block">
+              Sanskrit Sanctuary
+            </span>
+          </div>
+        </div>
+
+        <button
+          onClick={toggleTamburaDrone}
+          className="px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/25 hover:bg-amber-500/20 text-amber-200 transition-all flex items-center gap-2 text-xs tracking-widest uppercase cursor-pointer"
+        >
+          {isPlaying ? <Volume2 className="w-4 h-4 text-amber-300" /> : <VolumeX className="w-4 h-4 text-amber-400/50" />}
+          <span className="hidden sm:inline">{isPlaying ? 'Shanti Drone On' : 'Ambient Tone'}</span>
+        </button>
+      </header>
+
+      {/* MAIN HERO CARD */}
+      <main className="relative z-10 max-w-4xl w-full mx-auto px-6 py-12 my-auto">
+        <div 
+          className="bg-[#140e11]/85 backdrop-blur-2xl border border-amber-500/20 rounded-[2.5rem] p-8 sm:p-12 md:p-16 shadow-[0_0_60px_rgba(217,119,6,0.12)] relative overflow-hidden text-center transition-all duration-1000"
+          style={{
+            opacity: mounted ? 1 : 0,
+            transform: mounted ? 'translateY(0)' : 'translateY(24px)',
+            transitionTimingFunction: entranceEasing
+          }}
+        >
+          <Flower2 className="absolute top-6 left-6 w-8 h-8 text-amber-500/20" />
+          <Flower2 className="absolute top-6 right-6 w-8 h-8 text-amber-500/20" />
+          <Flower2 className="absolute bottom-6 left-6 w-8 h-8 text-amber-500/20" />
+          <Flower2 className="absolute bottom-6 right-6 w-8 h-8 text-amber-500/20" />
+
+          {/* TEACHER HONOR PILL */}
+          <div className="inline-flex items-center justify-center gap-2 px-6 py-2 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-xs sm:text-sm tracking-widest uppercase mb-8">
+            <Sparkles className="w-4 h-4 text-amber-300" />
+            <span>Dedicated to: <strong className="text-amber-100 font-semibold underline underline-offset-4 decoration-amber-400/50">Ms. Neetu Ma'am</strong> (Sanskrit Guru)</span>
+          </div>
+
+          {/* SANSKRIT MAIN GREETING */}
+          <h1 className="font-devanagari text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white mb-3 leading-[1.15]">
+            शिक्षकदिवसस्य हार्दाः शुभकामनाः
+          </h1>
+          <p className="font-instrument italic text-2xl sm:text-3xl text-amber-200/90 font-light mb-8">
+            Happy Teacher's Day to our Esteemed Sanskrit Educator
+          </p>
+
+          {/* INTERACTIVE SHLOKA CONTAINER */}
+          <div className="relative my-8 px-6 sm:px-10 py-8 rounded-3xl bg-amber-950/20 border border-amber-500/15 shadow-inner">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-amber-400/80 block mb-3 font-mono">
+              — संस्कृत श्लोक (Sanskrit Blessing) —
+            </span>
+            
+            <p className="font-devanagari text-xl sm:text-2xl md:text-3xl text-amber-100 leading-relaxed font-semibold whitespace-pre-line mb-4">
+              {SANSKRIT_SHLOKAS[shlokaIndex].sanskrit}
+            </p>
+
+            <p className="font-mono text-xs sm:text-sm text-amber-300/80 italic mb-4 max-w-xl mx-auto">
+              "{SANSKRIT_SHLOKAS[shlokaIndex].transliteration}"
+            </p>
+
+            <div className="w-16 h-[1px] bg-amber-500/30 mx-auto my-4" />
+
+            <p className="font-instrument text-lg sm:text-xl text-amber-50/90 font-light max-w-2xl mx-auto">
+              "{SANSKRIT_SHLOKAS[shlokaIndex].meaning}"
+            </p>
+          </div>
+
+          {/* PERSONAL MESSAGE & SIGNATURE */}
+          <div className="max-w-xl mx-auto mb-10 text-amber-200/80 text-sm sm:text-base leading-relaxed">
+            <p className="mb-4">
+              Respected Neetu Ma'am, thank you for guiding us through the timeless beauty of the Sanskrit language, its grammar, and rich cultural heritage. You turn every lesson into an inspiring journey!
+            </p>
+            <div className="flex items-center justify-center gap-2 pt-2 border-t border-amber-500/10">
+              <span className="text-xs text-amber-400/70 uppercase tracking-wider">With Utmost Reverence,</span>
+              <input
+                type="text"
+                value={studentName}
+                onChange={(e) => setStudentName(e.target.value)}
+                className="bg-transparent border-b border-amber-300/40 font-instrument italic text-xl text-amber-100 focus:outline-none text-center px-2"
+                placeholder="Your Name"
+              />
+            </div>
+          </div>
+
+          {/* ACTION BUTTONS */}
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <button
+              onClick={() => setPushpCount(prev => prev + 1)}
+              className="px-8 py-4 rounded-full bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-600 text-stone-950 font-semibold text-sm sm:text-base shadow-[0_0_25px_rgba(217,119,6,0.35)] hover:shadow-[0_0_35px_rgba(217,119,6,0.55)] hover:scale-105 active:scale-95 transition-all flex items-center gap-2.5 cursor-pointer"
+            >
+              <Flower2 className="w-5 h-5 text-stone-950" />
+              <span>पुष्पाञ्जलि / Offer Flowers ({pushpCount})</span>
+            </button>
+
+            <button
+              onClick={nextShloka}
+              className="px-7 py-4 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-200 hover:bg-amber-500/20 transition-all text-sm font-medium flex items-center gap-2 cursor-pointer hover:scale-105"
+            >
+              <RefreshCw className="w-4 h-4 text-amber-300" />
+              <span>Change Shloka</span>
+            </button>
+          </div>
+
+        </div>
+      </main>
+
+      {/* FOOTER */}
+      <footer className="relative z-20 max-w-[1440px] w-full mx-auto px-6 py-6 text-center border-t border-amber-500/10 text-xs text-amber-400/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <Heart className="w-4 h-4 text-amber-400/80 fill-amber-400/20" />
+          <span>Crafted with devotion for Teacher's Day</span>
+        </div>
+        <span className="font-devanagari text-amber-300/70">गुरुपूर्णिमा / शिक्षकदिवस अभिनन्दनम्</span>
+      </footer>
+    </div>
+  );
+}
+
+
